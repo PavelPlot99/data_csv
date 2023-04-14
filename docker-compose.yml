@@ -1,0 +1,49 @@
+version: "3"
+services:
+    #PHP Service
+    app:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        image: php:8.2-fpm-buster
+        container_name: php_parse
+        restart: unless-stopped
+        tty: true
+        environment:
+            SERVICE_NAME: app
+            SERVICE_TAGS: dev
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+            - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+            - ./php/php.ini:/usr/local/etc/php/php.ini
+
+    #Nginx Service
+    webserver:
+        image: nginx:alpine
+        container_name: nginx_parce
+        restart: unless-stopped
+        tty: true
+        volumes:
+            - ./:/var/www
+            - ./nginx/conf.d/:/etc/nginx/conf.d/
+        ports:
+        - "8087:80"
+    db:
+        image: mysql:5.7.22
+        container_name: db_parse
+        restart: unless-stopped
+        tty: true
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - ./database-local/:/var/www
+        ports:
+            - "10011:3306"
+
+    #Adminer
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - "6088:8080"

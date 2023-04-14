@@ -1,0 +1,9 @@
+/vendor
+common/.env
+/.idea
+/.vscode
+/database-local
+/nginx
+/php
+/html
+/data.csv
